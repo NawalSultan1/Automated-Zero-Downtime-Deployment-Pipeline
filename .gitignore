@@ -1,0 +1,18 @@
+# Ignore tfvars with sensitive data
+terraform.tfvars
+*.tfvars
+
+# Ignore local Terraform state
+*.tfstate
+*.tfstate.backup
+
+# Ignore crash logs
+crash.log
+
+# Ignore Terraform lock file (optional)
+.terraform.lock.hcl
+
+
+# Ignore SSH keys (if stored here — not recommended!)
+*.pem
+*.key
