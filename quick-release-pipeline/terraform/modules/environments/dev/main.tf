@@ -13,5 +13,6 @@ resource "aws_instance" "first_Server" {
     Name= "First_server"
     Project = "quick_release_pipeline"
     Environment = "dev"
+    key_name = aws_key_pair.blue.key_name
   }
 }
