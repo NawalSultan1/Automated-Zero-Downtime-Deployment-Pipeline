@@ -1,7 +1,7 @@
 # Ignore tfvars with sensitive data
 terraform.tfvars
 *.tfvars
-
+.terraform
 # Ignore local Terraform state
 *.tfstate
 *.tfstate.backup
@@ -16,3 +16,5 @@ crash.log
 # Ignore SSH keys (if stored here — not recommended!)
 *.pem
 *.key
+#ignoring the private key
+firstproject
