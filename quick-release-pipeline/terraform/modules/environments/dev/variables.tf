@@ -17,3 +17,6 @@ variable "public_key" {
   description = "location of the public key"
   type = string
 }
+data "aws_vpc" "default" {
+  default = true
+}

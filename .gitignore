@@ -18,3 +18,9 @@ crash.log
 *.key
 #ignoring the private key
 firstproject
+*.pem
+*.key
+*.pub
+.terraform/
+firstproject
+firstproject.pub
