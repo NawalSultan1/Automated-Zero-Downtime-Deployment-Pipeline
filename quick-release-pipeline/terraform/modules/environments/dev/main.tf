@@ -42,13 +42,13 @@ resource "aws_security_group" "blue-sg" {
   }
   egress {
     description = "Allow all outbound traffic"
-    from_port = 0
+    from_port = 0    //allow from every port 
     to_port = 0
     protocol = -1
     cidr_blocks = ["0.0.0.0/0"]  //all traffic from all ip addresses
   }
   tags = {
-    Name = "WebServer-sg"
+    Name = "blue-sg" //giving the server a new meaningful name 
   }
 }
 
