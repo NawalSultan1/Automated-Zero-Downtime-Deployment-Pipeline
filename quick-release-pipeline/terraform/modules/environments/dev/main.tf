@@ -5,7 +5,6 @@ resource "aws_key_pair" "blue_key" {             //here we are telling aws to cr
   key_name = var.key_name                    //this public key and the key name are given from variables (which act as an empty form) and tfvars file(which act as the answers to the empty form i.e variables.tf)
   public_key = file(var.public_key)
 }
-
 resource "aws_instance" "Blue_Server" {
   ami = "ami-020cba7c55df1f615"
   instance_type = var.instance_type
@@ -15,12 +14,12 @@ resource "aws_instance" "Blue_Server" {
     Name= "Blue_server"
     Project = "quick_release_pipeline"
     Environment = "dev"
-    
+  }
+  lifecycle {
+    create_before_destroy = true
   }
 }
-
 //The security group (firewall) defining the rules for in and outbound traffic
-
 resource "aws_security_group" "blue-sg" {
   name = "BlueGroup"
   description = "To Allow traffic flow from the server"
@@ -51,6 +50,3 @@ resource "aws_security_group" "blue-sg" {
     Name = "blue-sg" //giving the server a new meaningful name 
   }
 }
-
-
-

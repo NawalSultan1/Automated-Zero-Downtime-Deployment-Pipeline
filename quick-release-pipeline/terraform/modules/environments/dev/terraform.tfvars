@@ -1,2 +1,2 @@
-key_name = "firstproject"
-public_key = "firstproject.pub"
+key_name = "blue"
+public_key = "blue.pub"
