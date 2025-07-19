@@ -22,5 +22,9 @@ firstproject
 *.key
 *.pub
 .terraform/
-firstproject
-firstproject.pub
+blue
+blue.pub
+blue-key
+blue-key.pub
+green-key
+green-key.pub
