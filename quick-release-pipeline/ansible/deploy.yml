@@ -1,0 +1,13 @@
+---
+- name: Deploying the application to Green server
+  hosts: green
+  become: true
+
+  tasks:
+    - name: Copy index.html to Green server
+      copy:
+        src: ../files/index.html
+        dest: /var/www/html/index.html
+        mode: '0644'
+        owner: www-data
+        group: www-data

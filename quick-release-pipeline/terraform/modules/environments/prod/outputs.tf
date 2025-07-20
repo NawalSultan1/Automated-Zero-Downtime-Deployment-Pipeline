@@ -7,3 +7,6 @@ output "green-server-ip" {
   description = "Public ip address of green server"
   value = aws_instance.green-server.public_ip
 }
+output "load_balancer_dns" {
+  value = aws_lb.prod-load-balancer.dns_name
+}

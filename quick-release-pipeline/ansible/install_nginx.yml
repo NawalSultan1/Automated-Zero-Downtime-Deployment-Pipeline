@@ -1,6 +1,6 @@
 ---
 - name: Installing and configuring Nginx on servers
-  hosts: webservers
+  hosts: blue,green
   become: true
 
   tasks:
