@@ -14,12 +14,16 @@ variable "public_key_blue" {
   description = "public key of the server"
   type = string
 }
-data "aws_vpc" "default" {
-   default = true
-}
-data "aws_subnets" "default" {
-    filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
-  }
+# data "aws_vpc" "default" {
+#    default = true           #This creates a default vpc and subnet variable giving the default value. 
+# }
+# data "aws_subnets" "default" {
+#     filter {
+#     name   = "vpc-id"
+#     values = [data.aws_vpc.default.id]
+#   }
+# }
+variable "live-environment" {
+  default = "blue"
+  type = string
 }
