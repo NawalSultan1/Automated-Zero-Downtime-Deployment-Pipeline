@@ -22,3 +22,5 @@ TERRAFORM_DIR="/mnt/c/Users/Nawal\ Sultan/Desktop/Automated\ Zero-Downtime\ Depl
 terraform -chdir="$TERRAFORM_DIR" apply -auto-approve -var="live-environment=$TARGET_ENV"
 
 echo "Success! The '$TARGET_ENV' environment is now live"
+
+#Note : when using wsl to run the script use export PATH="c/path/terraform.exe" in ~/.bashrc and then run source ~/.bashrc in order to run terraform on wsl 

@@ -1,10 +1,10 @@
 ---
-- name: Deploying the application to Green server
-  hosts: green
+- name: Deploying the application to live Server
+  hosts: all
   become: true
 
   tasks:
-    - name: Copy index.html to Green server
+    - name: Copy index.html to live Server
       copy:
         src: ../files/index.html
         dest: /var/www/html/index.html
