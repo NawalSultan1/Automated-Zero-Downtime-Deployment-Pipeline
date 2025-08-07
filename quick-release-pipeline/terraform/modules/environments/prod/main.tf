@@ -68,10 +68,6 @@ resource "aws_security_group" "prod-sg-instance" {
   vpc_id = aws_vpc.prod-vpc.id
   description = "Defining the securtiy rules for instances"
   name = "prod-sg-instance"
-  ingress {
-  
-    
-  }
   egress {
     from_port = 0
     to_port = 0
@@ -82,13 +78,13 @@ resource "aws_security_group" "prod-sg-instance" {
     Name = "prod-sg-instance"
   }
 }
- resource "aws_security_group_rule" "instance_rules" {   //make this more secure with bastion hosts@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ resource "aws_security_group_rule" "instance_rules" {
   type = "ingress"
   security_group_id = aws_security_group.prod-sg-instance.id
-   description = "Allow HTTP traffic from load balancer"
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
+  description = "Allow HTTP traffic from load balancer"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
   source_security_group_id = aws_security_group.prod-sg-lb.id
 }  
 
