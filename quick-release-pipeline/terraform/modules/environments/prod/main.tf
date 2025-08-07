@@ -69,10 +69,7 @@ resource "aws_security_group" "prod-sg-instance" {
   description = "Defining the securtiy rules for instances"
   name = "prod-sg-instance"
   ingress {
-    description = "Allow HTTP traffic from load balancer"
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
+  
     
   }
   egress {
@@ -85,7 +82,18 @@ resource "aws_security_group" "prod-sg-instance" {
     Name = "prod-sg-instance"
   }
 }
-# resource "aws_security_group_rule" "instance_rules" {   //make this more secure with bastion hosts@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ resource "aws_security_group_rule" "instance_rules" {   //make this more secure with bastion hosts@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  type = "ingress"
+  security_group_id = aws_security_group.prod-sg-instance.id
+   description = "Allow HTTP traffic from load balancer"
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+  source_security_group_id = aws_security_group.prod-sg-lb.id
+}  
+
+
+#  resource "aws_security_group_rule" "instance_rules" {   //make this more secure with bastion hosts@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 #   type = "ingress"
 #   security_group_id = aws_security_group.prod-sg-instance.id
 #   description = "allow ssh for admins"
