@@ -4,14 +4,15 @@ provider "aws" {
 
 #Blue Server IaC
 
-resource "aws_key_pair" "blue-key" {
-     key_name = var.key_name_blue
-     public_key = file(var.public_key_blue)
-}
+# resource "aws_key_pair" "blue-key" {
+#      key_name = var.key_name_blue
+#      public_key = file(var.public_key_blue)
+# } //no need to use this resource when using an iam 
 resource "aws_instance" "blue-server" {
   instance_type = var.instance_type
   ami = "ami-020cba7c55df1f615"
-  key_name = aws_key_pair.blue-key.key_name
+  # key_name = aws_key_pair.blue-key.key_name  // use when you want a resource to have access to everything
+  iam_instance_profile = aws_iam_instance_profile.prod-webserver-profile.name
   vpc_security_group_ids = [aws_security_group.prod-sg-instance.id]
   subnet_id = aws_subnet.private-prod-subnet-1.id
   tags = {
@@ -27,7 +28,8 @@ resource "aws_instance" "blue-server" {
 resource "aws_instance" "green-server" {
   instance_type = var.instance_type
   ami = "ami-020cba7c55df1f615"
-  key_name = aws_key_pair.blue-key.key_name
+  # key_name = aws_key_pair.blue-key.key_name // use when you want a resource to have access to everything
+  iam_instance_profile = aws_iam_instance_profile.prod-webserver-profile.name
   vpc_security_group_ids = [aws_security_group.prod-sg-instance.id]
   subnet_id = aws_subnet.private-prod-subnet-2.id
   tags = {
@@ -83,12 +85,17 @@ resource "aws_security_group" "prod-sg-instance" {
     Name = "prod-sg-instance"
   }
 }
-resource "aws_security_group_rule" "instance_rules" {   //make this more secure with bastion hosts@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  type = "ingress"
-  security_group_id = aws_security_group.prod-sg-instance.id
-  description = "allow ssh for admins"
-  from_port = 22
-  to_port = 22
-  protocol = "tcp"
-  source_security_group_id = aws_security_group.prod-sg-lb.id
-}
+# resource "aws_security_group_rule" "instance_rules" {   //make this more secure with bastion hosts@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#   type = "ingress"
+#   security_group_id = aws_security_group.prod-sg-instance.id
+#   description = "allow ssh for admins"
+#   from_port = 22
+#   to_port = 22
+#   protocol = "tcp"
+#   source_security_group_id = aws_security_group.prod-sg-lb.id
+# }  
+
+//this is used to allow ssh access to the instances from the load balancer security group (traffic coming from the load balancer to ssh into the instances but
+// it leaves the port 22 open which is a security concerns
+// so we have to remove it and go to the IAM role method which doesnot leave any port open rather it uses the amazon ssm service to ssh into the instances
+// the admin will go to the ssm serveice and ask it to connect to the instance)
