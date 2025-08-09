@@ -23,6 +23,10 @@ variable "public_key_blue" {
 #     values = [data.aws_vpc.default.id]
 #   }
 # }
+variable "project_name" {
+  type = string
+  description = "The name of the project"
+}
 variable "live-environment" {
   default = "blue"
   type = string
