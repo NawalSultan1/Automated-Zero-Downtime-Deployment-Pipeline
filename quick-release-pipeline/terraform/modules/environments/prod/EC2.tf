@@ -4,7 +4,7 @@
 
 resource "aws_launch_template" "blue-lt" {
   name = "blue-lt"
-  image_id = "ami-0de716d6197524dd9"
+  image_id = data.aws_ssm_parameter.ecs-optimized-ami.value
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.prod-sg-instance.id]  
   iam_instance_profile {
@@ -23,7 +23,7 @@ resource "aws_launch_template" "blue-lt" {
 resource "aws_launch_template" "green-lt" {
   name = "green-lt"
 
-  image_id = "ami-0de716d6197524dd9"
+  image_id = data.aws_ssm_parameter.ecs-optimized-ami.value
 
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.prod-sg-instance.id]
@@ -152,7 +152,7 @@ resource "aws_security_group" "prod-sg-instance" {
 # # } //no need to use this resource when using an iam 
 # resource "aws_instance" "blue-server" {
 #   instance_type = var.instance_type
-#   ami = "ami-0de716d6197524dd9"
+#   ami = data.aws_ssm_parameter.ecs-optimized-ami.value
 #   # key_name = aws_key_pair.blue-key.key_name  // use when you want a resource to have access to everything
 #   iam_instance_profile = aws_iam_instance_profile.prod-webserver-profile.name
 #   vpc_security_group_ids = [aws_security_group.prod-sg-instance.id]
@@ -169,7 +169,7 @@ resource "aws_security_group" "prod-sg-instance" {
 
 # resource "aws_instance" "green-server" {
 #   instance_type = var.instance_type
-#   ami = "ami-0de716d6197524dd9"
+#   ami = data.aws_ssm_parameter.ecs-optimized-ami.value
 #   # key_name = aws_key_pair.blue-key.key_name // use when you want a resource to have access to everything
 #   iam_instance_profile = aws_iam_instance_profile.prod-webserver-profile.name
 #   vpc_security_group_ids = [aws_security_group.prod-sg-instance.id]

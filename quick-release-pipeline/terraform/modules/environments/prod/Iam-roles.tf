@@ -30,3 +30,13 @@ resource "aws_iam_instance_profile" "prod-webserver-profile" { // Instance profi
   name = "prod-webserver-profile"
   role = aws_iam_role.prod-webserver-role.name
 }
+# Granting ECS permissions to our EC2 Instance Role.
+# This policy allows the ecs-agent on the instance to communicate with the
+# ECS service and register itself into our cluster. This is the "second badge".
+resource "aws_iam_role_policy_attachment" "prod_webserver_ecs_policy_attachment" {
+  # The role we are adding the permission TO.
+  role       = aws_iam_role.prod-webserver-role.name
+  
+  # The ARN of the AWS-managed policy we are adding.
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}

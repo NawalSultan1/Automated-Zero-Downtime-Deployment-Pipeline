@@ -15,7 +15,7 @@ variable "public_key_blue" {
   type = string
 }
 # data "aws_vpc" "default" {
-#    default = true           #This creates a default vpc and subnet variable giving the default value. 
+#    default = true   #This creates a default vpc and subnet variable giving the default value. 
 # }
 # data "aws_subnets" "default" {
 #     filter {
@@ -30,4 +30,9 @@ variable "project_name" {
 variable "live-environment" {
   default = "blue"
   type = string
+}
+# DATA SOURCE: Dynamically fetches the latest recommended ECS-Optimized AMI ID.
+# This makes our infrastructure self-updating and removes the need for manual AMI lookups.
+data "aws_ssm_parameter" "ecs-optimized-ami" {
+  name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
 }
