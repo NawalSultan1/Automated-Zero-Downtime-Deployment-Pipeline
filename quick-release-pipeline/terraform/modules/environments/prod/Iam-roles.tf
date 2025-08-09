@@ -29,5 +29,4 @@ resource "aws_iam_instance_profile" "prod-webserver-profile" { // Instance profi
   depends_on = [aws_iam_role_policy_attachment.prod-webserver-policy-attachment]  
   name = "prod-webserver-profile"
   role = aws_iam_role.prod-webserver-role.name
-  
 }
