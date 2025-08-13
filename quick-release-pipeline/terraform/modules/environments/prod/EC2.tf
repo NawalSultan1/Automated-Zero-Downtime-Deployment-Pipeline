@@ -4,7 +4,7 @@
 
 resource "aws_launch_template" "blue-lt" {
   name = "blue-lt"
-  image_id = "ami-0de716d6197524dd9"
+  image_id = data.aws_ssm_parameter.ecs-optimized-ami.value
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.prod-sg-instance.id]  
   iam_instance_profile {
@@ -12,7 +12,7 @@ resource "aws_launch_template" "blue-lt" {
   }
  user_data = base64encode(<<-EOF
               #!/bin/bash
-              echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
+              echo ECS_CLUSTER=${aws_ecs_cluster.main-cluster.name} >> /etc/ecs/ecs.config
               EOF
   )
    tags = {
@@ -23,7 +23,7 @@ resource "aws_launch_template" "blue-lt" {
 resource "aws_launch_template" "green-lt" {
   name = "green-lt"
 
-  image_id = "ami-0de716d6197524dd9"
+  image_id = data.aws_ssm_parameter.ecs-optimized-ami.value
 
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.prod-sg-instance.id]
@@ -34,7 +34,7 @@ resource "aws_launch_template" "green-lt" {
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
-              echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
+              echo ECS_CLUSTER=${aws_ecs_cluster.main-cluster.name} >> /etc/ecs/ecs.config
               EOF
   )
 
@@ -127,56 +127,3 @@ resource "aws_security_group" "prod-sg-instance" {
   protocol = "tcp"
   source_security_group_id = aws_security_group.prod-sg-lb.id
 }  
-
-
-#  resource "aws_security_group_rule" "instance_rules" {   //make this more secure with bastion hosts@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-#   type = "ingress"
-#   security_group_id = aws_security_group.prod-sg-instance.id
-#   description = "allow ssh for admins"
-#   from_port = 22
-#   to_port = 22
-#   protocol = "tcp"
-#   source_security_group_id = aws_security_group.prod-sg-lb.id
-# }  
-
-//this is used to allow ssh access to the instances from the load balancer security group (traffic coming from the load balancer to ssh into the instances but
-// it leaves the port 22 open which is a security concerns
-// so we have to remove it and go to the IAM role method which doesnot leave any port open rather it uses the amazon ssm service to ssh into the instances
-// the admin will go to the ssm serveice and ask it to connect to the instance)
-
-# #Blue Server IaC
-
-# # resource "aws_key_pair" "blue-key" {
-# #      key_name = var.key_name_blue
-# #      public_key = file(var.public_key_blue)
-# # } //no need to use this resource when using an iam 
-# resource "aws_instance" "blue-server" {
-#   instance_type = var.instance_type
-#   ami = "ami-0de716d6197524dd9"
-#   # key_name = aws_key_pair.blue-key.key_name  // use when you want a resource to have access to everything
-#   iam_instance_profile = aws_iam_instance_profile.prod-webserver-profile.name
-#   vpc_security_group_ids = [aws_security_group.prod-sg-instance.id]
-#   subnet_id = aws_subnet.private-prod-subnet-1.id
-#   tags = {
-#     Name = "blue-server"
-#     description = "Production Server Blue Server"
-#     Environment = "Production"
-#     Project = "Zero-downtime-deployment-pipeline"
-#   }
-# }
-
-# # Green Server IaC
-
-# resource "aws_instance" "green-server" {
-#   instance_type = var.instance_type
-#   ami = "ami-0de716d6197524dd9"
-#   # key_name = aws_key_pair.blue-key.key_name // use when you want a resource to have access to everything
-#   iam_instance_profile = aws_iam_instance_profile.prod-webserver-profile.name
-#   vpc_security_group_ids = [aws_security_group.prod-sg-instance.id]
-#   subnet_id = aws_subnet.private-prod-subnet-2.id
-#   tags = {
-#     Name = "green-server"
-#     Environment = "Production"
-#     Project= "Zero-downtime-deployment-pipeline"
-#   }
-# }

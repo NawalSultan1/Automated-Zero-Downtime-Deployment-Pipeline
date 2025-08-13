@@ -1,11 +1,56 @@
-resource "aws_ecs_cluster" "main" {
-  name = "${var.project_name}-cluster"
-  setting {                   // To unable certain cluster level features or disable them
-     name  = "containerInsights"    // This enables container insights for the ECS cluster giving insights into the performance and health of the containers
-     value = "enabled"      // This enables the container insights feature
+
+resource "aws_ecs_cluster" "main-cluster" {
+  name = "main-cluster"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
   }
-  tags = {
-    Environment = "prod"
-    Project     = var.project_name
+}
+
+resource "aws_ecs_task_definition" "ecs-task-definition" {
+  family                   = "ecs-task-definition"
+  network_mode             = "bridge"
+  requires_compatibilities = ["EC2"]
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
+  container_definitions = templatefile("${path.module}/task-definitions/app.json.tpl", {
+    app_image = aws_ecr_repository.app.repository_url
+  })
+}
+
+# The Blue cluster services
+resource "aws_ecs_service" "blue" {
+  name            = "blue-service"
+  cluster         = aws_ecs_cluster.main-cluster.id
+  task_definition = aws_ecs_task_definition.ecs-task-definition.arn
+  desired_count   = 1
+  launch_type     = "EC2"
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.blue-tg.arn
+    container_name   = "zero-downtime-app-container"
+    container_port   = 80
   }
+
+  # THIS IS THE FIX. The dependency was missing from the list.
+  # This ensures the IAM role for the task exists before the service tries to start.
+  depends_on = [aws_iam_role_policy_attachment.ecs_task_execution_role_policy]
+}
+
+
+# The ecs service for green server
+resource "aws_ecs_service" "green" {
+  name            = "green-service"
+  cluster         = aws_ecs_cluster.main-cluster.id
+  task_definition = aws_ecs_task_definition.ecs-task-definition.arn
+  desired_count   = 1
+  launch_type     = "EC2"
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.green-tg.arn
+    container_name   = "zero-downtime-app-container"
+    container_port   = 80
+  }
+
 }

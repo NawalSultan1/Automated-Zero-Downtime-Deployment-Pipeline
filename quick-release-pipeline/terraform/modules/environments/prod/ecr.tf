@@ -2,43 +2,26 @@
 # the new image goes and also the ec2 instance will consult this repository for latest images and will update accordingly without using ansible this is 
 # where every configuration comes from (i.e docker images)
 
-resource "aws_ecr_repository" "app-repo" {
-  name                 = "zero-downtime-deployment"
+# This file's ONLY job is to define the blueprint for our ECR repository.
+# It tells Terraform to CREATE this resource.
+
+resource "aws_ecr_repository" "prod-ecr" {
+  # This is the local name Terraform uses. The rest of our code
+  # will refer to the repository as "aws_ecr_repository.app".
+  # This MUST be "app" to match what ecs.tf is looking for.
+
+  # This is the actual name of the repository that will be created in AWS.
+  name = "zero-downtime-deployment"
+
+  # This is a security setting to prevent accidentally overwriting image tags.
   image_tag_mutability = "IMMUTABLE"
+
+  # This enables encryption for our images stored in the repository.
   encryption_configuration {
     encryption_type = "AES256"
   }
+
   tags = {
-    Environment = "prod"
-    Project     = "zero-downtime-deployment"
+    Project = var.project_name
   }
-}
-
-# Lifecycle policy to automatically expire untagged images older than 30 days
-resource "aws_ecr_lifecycle_policy" "app_repo_policy" {
-  repository = aws_ecr_repository.app-repo.name
-
-  policy = jsonencode({
-    rules = [
-      {
-        rulePriority = 1
-        description  = "Expire untagged images older than 30 days"
-        selection = {
-          tagStatus   = "untagged"
-          countType   = "sinceImagePushed"
-          countUnit   = "days"
-          countNumber = 30
-        }
-        action = {
-          type = "expire"
-        }
-      }
-    ]
-  })
-}
-
-output "ecr_repository_url" {  //gives the url of the ecr repository 
-  value = aws_ecr_repository.app-repo.repository_url
-  description = "The URL of the ECR repository"
-  
 }

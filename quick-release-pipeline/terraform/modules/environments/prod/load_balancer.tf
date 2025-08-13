@@ -43,9 +43,9 @@ resource "aws_lb_target_group" "green-tg" {
   }
 }
 # The aws listener listens to the incoming traffic and redirects it to the target 
-# group sepecified in the default action and is connected to the load balancer 
+# group sepecified in the default action and is connected to the load balancer Like a rule book that what to do with the incoming traffic
 
-resource "aws_lb_listener" "name" {
+resource "aws_lb_listener" "prod-lb-listener" {
  load_balancer_arn = aws_lb.prod-load-balancer.arn
  port = 80
  protocol = "HTTP"
@@ -53,25 +53,4 @@ resource "aws_lb_listener" "name" {
    type = "forward"
    target_group_arn = var.live-environment == "blue" ? aws_lb_target_group.blue-tg.arn : aws_lb_target_group.green-tg.arn
  }
-}
-#Assigning Servers to the target groups 
-# Blue server in blue target group
-# resource "aws_lb_target_group_attachment" "blue_attachment" { 
-#   target_group_arn = aws_lb_target_group.blue-tg.arn
-#   target_id = aws_instance.blue-server.id
-#   port = 80                                                                                      //Used when using static instances rather than dynamic instances from ASG's
-# }
-# #Green Server in green target group
-# resource "aws_lb_target_group_attachment" "green_attachment" {
-#   target_id = aws_instance.green-server.id
-#   target_group_arn = aws_lb_target_group.green-tg.arn
-#   port = 80
-# }
-resource "aws_autoscaling_attachment" "blue_attachment" {
-  autoscaling_group_name = aws_autoscaling_group.blue-asg.name
-  lb_target_group_arn = aws_lb_target_group.blue-tg.arn
-}
-resource "aws_autoscaling_attachment" "green_attachment" {
-  autoscaling_group_name = aws_autoscaling_group.green-asg.name
-  lb_target_group_arn = aws_lb_target_group.green-tg.arn
 }
