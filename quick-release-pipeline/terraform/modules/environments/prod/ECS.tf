@@ -14,8 +14,8 @@ resource "aws_ecs_task_definition" "ecs-task-definition" {
   requires_compatibilities = ["EC2"]
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 
-  container_definitions = templatefile("${path.module}/task-definitions/app.json.tpl", {
-    app_image = aws_ecr_repository.app.repository_url
+  container_definitions = templatefile("/task-definitions/app.json.tpl", {
+    app_image = aws_ecr_repository.prod-ecr.repository_url
   })
 }
 
@@ -33,7 +33,6 @@ resource "aws_ecs_service" "blue" {
     container_port   = 80
   }
 
-  # THIS IS THE FIX. The dependency was missing from the list.
   # This ensures the IAM role for the task exists before the service tries to start.
   depends_on = [aws_iam_role_policy_attachment.ecs_task_execution_role_policy]
 }

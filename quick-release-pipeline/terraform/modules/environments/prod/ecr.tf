@@ -8,10 +8,10 @@
 resource "aws_ecr_repository" "prod-ecr" {
   # This is the local name Terraform uses. The rest of our code
   # will refer to the repository as "aws_ecr_repository.app".
-  # This MUST be "app" to match what ecs.tf is looking for.
+
 
   # This is the actual name of the repository that will be created in AWS.
-  name = "zero-downtime-deployment"
+  name = "prod-ecr"
 
   # This is a security setting to prevent accidentally overwriting image tags.
   image_tag_mutability = "IMMUTABLE"

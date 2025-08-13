@@ -54,3 +54,22 @@ resource "aws_lb_listener" "prod-lb-listener" {
    target_group_arn = var.live-environment == "blue" ? aws_lb_target_group.blue-tg.arn : aws_lb_target_group.green-tg.arn
  }
 }
+
+
+resource "aws_lb_listener_rule" "inactive_rule" {
+  priority     = 100
+  listener_arn = aws_lb_listener.prod-lb-listener.arn
+
+  # The action now dynamically points to the INACTIVE target group.
+  action {
+    type             = "forward"
+    target_group_arn = var.live-environment == "blue" ? aws_lb_target_group.green-tg.arn : aws_lb_target_group.blue-tg.arn
+  }
+
+  # The condition that will never be met by real traffic.
+  condition {
+    path_pattern {
+      values = ["/inactive-path-for-health-check"]
+    }
+  }
+}
