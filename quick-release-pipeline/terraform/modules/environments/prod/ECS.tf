@@ -1,8 +1,6 @@
-# -----------------------------------------------------------------------------
-# DEFINITION 1: THE ECS CLUSTER (The "Restaurant Company")
-# -----------------------------------------------------------------------------
-resource "aws_ecs_cluster" "main" {
-  name = "${var.project_name}-cluster"
+
+resource "aws_ecs_cluster" "main-cluster" {
+  name = "main-cluster"
 
   setting {
     name  = "containerInsights"
@@ -10,11 +8,8 @@ resource "aws_ecs_cluster" "main" {
   }
 }
 
-# -----------------------------------------------------------------------------
-# DEFINITION 2: THE TASK DEFINITION (The Official "Recipe Card")
-# -----------------------------------------------------------------------------
-resource "aws_ecs_task_definition" "app" {
-  family                   = "zero-downtime-app-task"
+resource "aws_ecs_task_definition" "ecs-task-definition" {
+  family                   = "ecs-task-definition"
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
@@ -24,15 +19,11 @@ resource "aws_ecs_task_definition" "app" {
   })
 }
 
-# -----------------------------------------------------------------------------
-# DEFINITION 3 & 4: THE ECS SERVICES (The "Blue & Green Kitchen Managers")
-# -----------------------------------------------------------------------------
-
-# The Blue Kitchen Manager
+# The Blue cluster services
 resource "aws_ecs_service" "blue" {
   name            = "blue-service"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.app.arn
+  cluster         = aws_ecs_cluster.main-cluster.id
+  task_definition = aws_ecs_task_definition.ecs-task-definition.arn
   desired_count   = 1
   launch_type     = "EC2"
 
@@ -48,11 +39,11 @@ resource "aws_ecs_service" "blue" {
 }
 
 
-# The Green Kitchen Manager
+# The ecs service for green server
 resource "aws_ecs_service" "green" {
   name            = "green-service"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.app.arn
+  cluster         = aws_ecs_cluster.main-cluster.id
+  task_definition = aws_ecs_task_definition.ecs-task-definition.arn
   desired_count   = 1
   launch_type     = "EC2"
 

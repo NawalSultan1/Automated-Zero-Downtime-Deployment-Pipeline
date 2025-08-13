@@ -12,7 +12,7 @@ resource "aws_launch_template" "blue-lt" {
   }
  user_data = base64encode(<<-EOF
               #!/bin/bash
-              echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
+              echo ECS_CLUSTER=${aws_ecs_cluster.main-cluster.name} >> /etc/ecs/ecs.config
               EOF
   )
    tags = {
@@ -34,7 +34,7 @@ resource "aws_launch_template" "green-lt" {
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
-              echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
+              echo ECS_CLUSTER=${aws_ecs_cluster.main-cluster.name} >> /etc/ecs/ecs.config
               EOF
   )
 

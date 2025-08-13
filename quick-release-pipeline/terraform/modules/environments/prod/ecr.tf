@@ -5,7 +5,7 @@
 # This file's ONLY job is to define the blueprint for our ECR repository.
 # It tells Terraform to CREATE this resource.
 
-resource "aws_ecr_repository" "app" {
+resource "aws_ecr_repository" "prod-ecr" {
   # This is the local name Terraform uses. The rest of our code
   # will refer to the repository as "aws_ecr_repository.app".
   # This MUST be "app" to match what ecs.tf is looking for.

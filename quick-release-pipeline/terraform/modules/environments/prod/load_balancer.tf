@@ -43,9 +43,9 @@ resource "aws_lb_target_group" "green-tg" {
   }
 }
 # The aws listener listens to the incoming traffic and redirects it to the target 
-# group sepecified in the default action and is connected to the load balancer 
+# group sepecified in the default action and is connected to the load balancer Like a rule book that what to do with the incoming traffic
 
-resource "aws_lb_listener" "name" {
+resource "aws_lb_listener" "prod-lb-listener" {
  load_balancer_arn = aws_lb.prod-load-balancer.arn
  port = 80
  protocol = "HTTP"
