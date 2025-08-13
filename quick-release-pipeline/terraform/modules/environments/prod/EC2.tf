@@ -12,6 +12,10 @@ resource "aws_launch_template" "blue-lt" {
   }
  user_data = base64encode(<<-EOF
               #!/bin/bash
+              yum install -y unzip
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip awscliv2.zip
+              ./aws/install
               echo ECS_CLUSTER=${aws_ecs_cluster.main-cluster.name} >> /etc/ecs/ecs.config
               EOF
   )
@@ -34,6 +38,10 @@ resource "aws_launch_template" "green-lt" {
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
+              yum install -y unzip
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip awscliv2.zip
+              ./aws/install
               echo ECS_CLUSTER=${aws_ecs_cluster.main-cluster.name} >> /etc/ecs/ecs.config
               EOF
   )

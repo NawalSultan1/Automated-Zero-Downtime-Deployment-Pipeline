@@ -13,6 +13,7 @@ resource "aws_lb" "prod-load-balancer" {
 resource "aws_lb_target_group" "blue-tg" {
   name = "blue-tg"
   port = 80
+  target_type = "ip"
   protocol = "HTTP"
   vpc_id = aws_vpc.prod-vpc.id
 
@@ -31,6 +32,7 @@ resource "aws_lb_target_group" "green-tg" {
   name = "green-tg"
   port = 80
   protocol = "HTTP"
+  target_type = "ip"
   vpc_id = aws_vpc.prod-vpc.id
   health_check {
     protocol = "HTTP"

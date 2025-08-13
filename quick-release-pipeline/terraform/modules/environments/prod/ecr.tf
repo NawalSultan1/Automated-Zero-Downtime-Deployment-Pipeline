@@ -5,13 +5,13 @@
 # This file's ONLY job is to define the blueprint for our ECR repository.
 # It tells Terraform to CREATE this resource.
 
-resource "aws_ecr_repository" "prod-ecr" {
+resource "aws_ecr_repository" "app" {
   # This is the local name Terraform uses. The rest of our code
   # will refer to the repository as "aws_ecr_repository.app".
 
 
   # This is the actual name of the repository that will be created in AWS.
-  name = "prod-ecr"
+  name = "zero-downtime-app"
 
   # This is a security setting to prevent accidentally overwriting image tags.
   image_tag_mutability = "IMMUTABLE"
